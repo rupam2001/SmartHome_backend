@@ -63,6 +63,7 @@ function onMessage(msg, ws) {
   }
 }
 function handleInit(data, ws) {
+  //by device
   //authorize here pending....
   const { device_id, states } = data;
   if (clients_map[device_id]) {
@@ -72,7 +73,7 @@ function handleInit(data, ws) {
       states,
       appWs: clients_map[device_id].appWs,
       ws_token: clients_map[device_id].ws_token,
-      last_state_updated_at: clients_map[device_id].last_state_updated_at,
+      last_state_updated_at: new Date().getTime(),
     };
     //send the latest states whenver reconnected
     const msg = JSON.stringify({
@@ -82,7 +83,10 @@ function handleInit(data, ws) {
       isOnline: true,
     });
     clients_map[device_id].appWs.send(msg);
+    console.log("send");
+    return;
   }
+  console.log("here");
   clients_map[device_id] = { ws: ws, states };
 }
 
@@ -99,15 +103,31 @@ async function handleGetStates(data, appWs) {
       isOnline: true,
     });
     appWs.send(msg);
+    return;
   }
+  // clients_map[device_id] = {
+  //   ws: undefined,
+  //   appWs: appWs,
+  //   ws_token: ws_token,
+  //   last_state_updated_at: new Date().getTime(),
+  // };
   appWs.send(JSON.stringify({ isOnline: false }));
+  console.log("getstates here");
 }
 
 async function handleAppInit(data, appWs) {
   const { device_id, ws_token } = data;
 
   if (!(device_id in clients_map)) {
-    appWs.send(JSON.stringify({ success: false, msg: "device not found" }));
+    appWs.send(JSON.stringify({ success: false, msg: "device offline" }));
+    clients_map[device_id] = {
+      ws: undefined,
+      appWs: appWs,
+      ws_token: ws_token,
+      last_state_updated_at: new Date().getTime(),
+    };
+    console.log("inited");
+
     return false;
   }
   //checking if ws_token available
@@ -138,13 +158,15 @@ async function handleAppInit(data, appWs) {
 
 async function handleSendToDevice(data, appWs) {
   const res = await handleAppInit(data, appWs);
-  const { device_id, ws_token, command } = data;
+  const { device_id, ws_token, command, value } = data;
   console.log("yooooooo", res);
   if (!res) return;
   //ws_token with this device_id found..
   //put it in clients_map
 
-  clients_map[device_id]?.ws.send(JSON.stringify({ command }));
+  clients_map[device_id]?.ws.send(
+    JSON.stringify({ command, value: value ? value : -1 })
+  );
 }
 
 function updateStates(data) {
