@@ -7,16 +7,11 @@ const schema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   phone: {
     type: Number,
     required: true,
-  },
-  device_id: {
-    type: String,
-  },
-  ws_token: {
-    type: String,
   },
   password: {
     type: String,

@@ -1,0 +1,29 @@
+POST http://localhost:5000/create_user
+Content-Type: application/json
+
+{
+    "name":"Rupam Jyoti Das",
+    "email":"rupam@gmail.com",
+    "phone":8638047859,
+    "password":"12345678"
+}
+
+###
+
+POST http://localhost:5000/create_room
+Content-Type: application/json
+
+{
+    "user_id":"63e13bb2c44dc16171f63e14",
+    "title":"Room 1"
+}
+
+###
+
+POST http://localhost:5000/create_device
+Content-Type: application/json
+
+{
+    "user_id":"63e13bb2c44dc16171f63e14",
+    "room_id":"63e13c9624dd66877148f210"
+}

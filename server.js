@@ -3,7 +3,6 @@ const WebSocket = require("ws");
 const USERS = require("./database/models/users.model");
 const wss = new WebSocket.Server({ port: 5001 });
 console.log("Websocket Stated at port", 5001);
-
 require("./database/dbConnect").connect();
 
 const PORT = process.env.PORT || 5002;
