@@ -56,12 +56,6 @@ Subscriber();
 
 
 //
-
-
-
-
-
-let clients_socket_map = {};
 let devices_socket_map = {};
 let devices = {
   device_id: ["wtoken1", "wtoken2", "..."],

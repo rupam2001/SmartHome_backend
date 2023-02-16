@@ -31,12 +31,26 @@ async function RedisClient(){
 RedisClient()
 
 
+app.post("/get_user_data", async (req, res) => {
+    const { accessToken } = req.body;
+    try {
+      const { user_id } = await getAuthDataFromAccessToken(accessToken);
+      
+      const user = await USERS.findById(user_id, { password: 0})
+
+      return res.status(200).json(user);
+    } catch (error) {
+      console.log(error, "get_device");
+      res.sendStatus(500);
+    }
+  });
+  
+
+
 app.post("/get_devices", async (req, res) => {
   const { accessToken } = req.body;
-  console.log(accessToken, "get_devices access token");
   try {
     const { user_id } = await getAuthDataFromAccessToken(accessToken);
-    console.log(user_id);
     const devices = await DEVICE.find({ user_id: user_id }).populate("room_id");
     return res.status(200).json(devices);
   } catch (error) {
@@ -166,6 +180,22 @@ app.post("/create_device", async (req, res) => {
     console.log(error);
   }
 });
+
+
+app.post("/room/edit", async (req, res) => {
+    try {
+        const { accessToken } = req.body;
+        const { user_id } = await getAuthDataFromAccessToken(accessToken);
+        const { title }  = req.body
+        console.log(user_id, title)
+        if(!title) return res.sendStatus(400);
+        await ROOM.updateOne({user_id: user_id}, { $set: { title: title}})
+        return res.status(200).json({success: true})
+    } catch (error) {
+        res.sendStatus(500)
+        console.log(error)
+    }
+})
 
 async function getAuthDataFromAccessToken(token) {
   return new Promise((resolve, reject) => {

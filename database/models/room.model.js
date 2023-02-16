@@ -10,6 +10,11 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  tags:[
+    {
+      type: String
+    }
+  ]
 });
 
 const ROOM = mongoose.model("smart_home_room", schema);
