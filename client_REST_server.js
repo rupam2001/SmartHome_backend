@@ -11,7 +11,7 @@ const express = require("express");
 const cors = require("cors");
 const ROOM = require("./database/models/room.model");
 const DEVICE = require("./database/models/device.model");
-const { generateJWT } = require("./utils/Authorize");
+const { generateJWT, generateJWTWsToken } = require("./utils/Authorize");
 const PORT = 5003;
 
 const app = express();
@@ -81,13 +81,11 @@ app.post("/get_wstoken", async (req, res) => {
     const { accessToken } = req.body;
     const { verified, user_id } = await getAuthDataFromAccessToken(accessToken);
 
-    const wstoken = await generateJWT({ time: "time" });
+    const wstoken = await generateJWTWsToken({ user_id });
     //get all the devices for this account
     const _devices = await DEVICE.find({ user_id });
     //now for all the devices set clients and devices map
     
-    // console.log(wstoken, _devices);
-
     for (let i = 0; i < _devices.length; i++) {
       //set clients
       const device_id = _devices[i]._id.toString();
@@ -145,31 +143,31 @@ app.post("/create_device", async (req, res) => {
   try {
     const switches = [
       {
-        title: "Light 1",
+        title: "Switch 1",
         id: "l1",
       },
       {
-        title: "Light 2",
+        title: "Switch 2",
         id: "l2",
       },
       {
-        title: "Light 3",
+        title: "Switch 3",
         id: "l3",
       },
       {
-        title: "Light 4",
+        title: "Switch 4",
         id: "l4",
       },
       {
-        title: "Light 5",
+        title: "Switch 5",
         id: "l5",
       },
       {
-        title: "Light 6",
+        title: "Switch 6",
         id: "l6",
       },
       {
-        title: "Light 7",
+        title: "Switch 7",
         id: "l7",
       },
     ];

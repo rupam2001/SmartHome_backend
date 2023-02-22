@@ -1,7 +1,21 @@
 require("dotenv").config();
 const WebSocket = require("ws");
 const USERS = require("./database/models/users.model");
-const wss = new WebSocket.Server({ port: 5001 });
+const wss = new WebSocket.Server({ port: 5001, verifyClient: async (info, cb) => {
+  // const token = info.req.headers.token
+  // console.log(info)
+  // if (!token)
+  //     cb(false, 401, 'Unauthorized')
+  // else{
+  //   verifyWsToken().then((decoded) =>{
+  //     cb(true)
+  //   }).catch(err => {
+  //     cb(false, 401, 'Unauthorized')
+  //   })
+  // }
+  cb(true)
+
+}});
 console.log("Websocket Stated at port", 5001);
 require("./database/dbConnect").connect();
 const jwt = require("jsonwebtoken");
@@ -88,19 +102,28 @@ wss.on("connection", (ws, req) => {
     onMessage(msg, ws);
   });
   ws.on("close", () => {
-    console.log("disconnected");
+    console.log("disconnected", ws.wstoken);
+    delete clients_socket_map[ws.wstoken]
   });
 });
 
-function onMessage(msg, ws) {
+async function onMessage(msg, ws) {
   msg = msgBufferToJSON(msg);
   // for the client (app)
   const { wstoken, app_init, getStates, is_command } = msg;
   if (app_init) {
-    if (verifyWsToken(wstoken) == false) return;
+    // try {
+    //   await verifyWsToken(wstoken)
+    // } catch (error) {
+    //   console.log(error)
+    //   return 
+    // }
     //verification success >>
     clients_socket_map[wstoken] = ws;
+    ws.wstoken = wstoken
     ws.send(JSON.stringify({ init_success: true }));
+
+
     console.log(
       wstoken,
       "client init successfull >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>BOOOMMMM"
@@ -108,7 +131,6 @@ function onMessage(msg, ws) {
     return;
   }
   if (getStates) {
-    if (verifyWsToken(wstoken) == false) return;
     //now request all the devices to send their states
     const _devices = getDevicesUsingWsToken(wstoken);
     
@@ -119,7 +141,6 @@ function onMessage(msg, ws) {
     return;
   }
   if (is_command) {
-    if (verifyWsToken(wstoken) == false) return;
     const { device_id, command } = msg;
     console.log("is_command", msg)
     // publish to redis in 'client_to_device' topic
@@ -130,8 +151,20 @@ function onMessage(msg, ws) {
 
 }
 
-function verifyWsToken(token) {
-  return true;
+async function verifyWsToken(token) {
+  return new Promise((resolve, reject) => {
+    jwt.verify(
+      token,
+      process.env.ACCESS_TOKEN_SECRET_WS,
+      async (err, authData) => {
+        if (err) {
+          reject({ verified: false });
+        } else {
+          resolve({ ...authData, verified: true });
+        }
+      }
+    );
+  })
 }
 
 function getDevicesUsingWsToken(token) {

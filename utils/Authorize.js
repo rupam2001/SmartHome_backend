@@ -20,6 +20,24 @@ const generateJWT = async (tokenData) => {
   });
 };
 
+const generateJWTWsToken = async (tokenData) => {
+  return new Promise((resolve, reject) => {
+    jwt.sign(
+      {
+        ...tokenData,
+      },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "30d" },
+      (err, token) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(token);
+        }
+      }
+    );
+  });
+};
 //FORMAT OF TOKEN
 //Authorization: Bearer <access_token> <refreshed_token>
 
@@ -69,4 +87,4 @@ const authenticateToken = async (req, res, next) => {
   }
 };
 
-module.exports = { generateJWT, authenticateToken };
+module.exports = { generateJWT, authenticateToken, generateJWTWsToken };

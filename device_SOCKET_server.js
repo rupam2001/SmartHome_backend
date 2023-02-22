@@ -72,6 +72,7 @@ wss.on("connection", (ws, req) => {
   });
   ws.on("close", () => {
     console.log("disconnected");
+    delete devices_socket_map[ws.device_id]
   });
 });
 
@@ -85,6 +86,7 @@ function onMessage(msg, ws) {
     if (!verifyDeviceId(device_id)) return;
     //device verified
     devices_socket_map[device_id] = ws;
+    ws.device_id = device_id
     const _clients = getClientsUsingDeviceID(device_id);
     devices[device_id] = _clients;
     console.log(device_id, "device init successfull", _clients);
