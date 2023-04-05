@@ -22,7 +22,7 @@ app.use(express.json());
 // redis 
 
 const redis = require('redis');
-const redisClient = redis.createClient({url:"redis://192.168.29.19:6379"});
+const redisClient = redis.createClient({url: process.env.REDIS_URL});
 
 async function RedisClient(){
     await redisClient.connect();

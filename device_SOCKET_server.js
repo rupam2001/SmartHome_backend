@@ -23,7 +23,7 @@ app.use(express.json());
 
 const redis = require('redis');
 const { CLIENT_TO_DEVICE_REDDIS_CHANNEL, DEVICE_TO_CLIENT_REDDIS_CHANNEL } = require("./constance");
-const publisher = redis.createClient({url:"redis://192.168.29.19:6379"});
+const publisher = redis.createClient({url: process.env.REDIS_URL});
 
 async function Publisher(){
     await publisher.connect();
@@ -31,7 +31,7 @@ async function Publisher(){
 }
 Publisher()
 
-const client = redis.createClient({url:"redis://192.168.29.19:6379"});
+const client = redis.createClient({url: process.env.REDIS_URL});
 const subscriber = client.duplicate();
 
 async function Subscriber(){

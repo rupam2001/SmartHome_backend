@@ -13,3 +13,10 @@ const schema = new mongoose.Schema({
 
 const SESSIONS = mongoose.model("smarthome_session", schema);
 module.exports = SESSIONS;
+
+
+/**
+ * 
+ * NOT IN USE
+ * 
+ */
