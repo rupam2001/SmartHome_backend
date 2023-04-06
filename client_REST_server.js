@@ -211,4 +211,8 @@ async function getAuthDataFromAccessToken(token) {
   });
 }
 
+app.get("/", (req, res)=>{
+  res.send("client REST server running")
+})
+
 app.listen(PORT, () => console.log("Server is running at", PORT));
