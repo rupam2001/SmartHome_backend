@@ -135,7 +135,7 @@ async function onMessage(msg, ws) {
     const _devices = getDevicesUsingWsToken(wstoken);
     
     // publish to redis in 'client_to_device' topic
-    publisher.publish(CLIENT_TO_DEVICE_REDDIS_CHANNEL, JSON.stringify({msg:{ command: "updatestate(doesnot matter)"}, devices: _devices}))
+    publisher.publish(CLIENT_TO_DEVICE_REDDIS_CHANNEL, JSON.stringify({msg:{ command: "getStates"}, devices: _devices}))
 
     console.log("published in", CLIENT_TO_DEVICE_REDDIS_CHANNEL, 'topic for getStates');
     return;
