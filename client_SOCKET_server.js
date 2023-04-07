@@ -54,7 +54,7 @@ async function Publisher(){
 }
 Publisher()
 
-const client = redis.createClient({url:"redis://192.168.29.19:6379"});
+const client = redis.createClient({url:process.env.REDIS_URL});
 const subscriber = client.duplicate();
 
 async function Subscriber(){
