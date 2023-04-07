@@ -40,7 +40,7 @@ async function Subscriber(){
     console.log('subscriber connetced')
     await subscriber.subscribe(CLIENT_TO_DEVICE_REDDIS_CHANNEL, (data) => {
         const { msg, devices} = JSON.parse(data);   // devices =  [wstoken, wstoken2, ...]
-        console.log('received data from ', CLIENT_TO_DEVICE_REDDIS_CHANNEL)
+        console.log('received data from ', CLIENT_TO_DEVICE_REDDIS_CHANNEL, devices, msg)
         
         //send the message to all the devices
         for (let i = 0; i < devices?.length; i++) {

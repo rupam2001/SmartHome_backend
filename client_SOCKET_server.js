@@ -144,6 +144,10 @@ async function onMessage(msg, ws) {
     const { device_id, command } = msg;
     console.log("is_command", msg)
     // publish to redis in 'client_to_device' topic
+    if(Array.isArray(device_id)){
+      publisher.publish(CLIENT_TO_DEVICE_REDDIS_CHANNEL, JSON.stringify({msg: { command }, devices: device_id}))
+      return
+    }
     publisher.publish(CLIENT_TO_DEVICE_REDDIS_CHANNEL, JSON.stringify({msg: { command }, devices: [device_id]}))
     console.log("published in", CLIENT_TO_DEVICE_REDDIS_CHANNEL, 'topic for Command');
     return;
