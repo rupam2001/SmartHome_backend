@@ -18,7 +18,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-
+app.use(express.static("build"))
 // redis 
 
 const redis = require('redis');
@@ -210,6 +210,12 @@ async function getAuthDataFromAccessToken(token) {
     );
   });
 }
+
+
+const path = require('path');
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
+});
 
 app.get("/", (req, res)=>{
   res.send("client REST server running")
