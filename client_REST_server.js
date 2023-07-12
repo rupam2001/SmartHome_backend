@@ -222,7 +222,7 @@ async function getAuthDataFromAccessToken(token) {
 }
 
 const path = require("path");
-const { device } = require("aws-iot-device-sdk");
+// const { device } = require("aws-iot-device-sdk");
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "build", "index.html"));
 });
