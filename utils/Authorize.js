@@ -60,21 +60,6 @@ const authenticateToken = async (req, res, next) => {
       process.env.ACCESS_TOKEN_SECRET,
       async (err, authData) => {
         if (err) {
-          //use refresh token
-          // const session = await SESSIONS.findOne({
-          //   refresh_token: bearerRefreshToken,
-          // });
-          // if (!session) {
-          //   //refresh token not available
-          //   return res.sendStatus(404);
-          // }
-          // // refresh token available create new access_token
-          // const access_token = await generateJWT({
-          //   user_id: session.user_id,
-          // });
-          // req.access_token = access_token;
-          // req.authData = { user_id: session.user_id };
-          // next();
           res.sendStatus(403);
         } else {
           req.authData = authData;

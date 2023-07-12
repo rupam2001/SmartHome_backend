@@ -9,6 +9,14 @@ const switch_schema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  type: {
+    type: String,
+  },
+  img_url: {
+    type: String,
+    default:
+      "https://us.123rf.com/450wm/jemastock/jemastock1702/jemastock170202722/71262294-lamp-icon-over-white-background-colorful-design-vector-illustration.jpg?ver=6",
+  },
 });
 
 const schema = new mongoose.Schema({
